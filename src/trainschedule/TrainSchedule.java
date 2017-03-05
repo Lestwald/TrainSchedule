@@ -1,51 +1,43 @@
 package trainschedule;
 
+import java.time.LocalTime;
 import java.util.*;
 
 public class TrainSchedule {
-    private final Set<Train> trains;
+    final Map<String, Train> trains = new HashMap<>();
 
     public TrainSchedule(Set<Train> trains) {
-        this.trains = trains;
+        for (Train train : trains) {
+            this.trains.putAll(train.mapOfTrain());
+        }
     }
 
     public void addTrain(Train train) {
-        trains.add(train);
+        trains.putAll(train.mapOfTrain());
     }
 
     public void removeTrain(String nameOfTrain) {
-        trains.removeIf(train -> train.getName().equals(nameOfTrain));
+        trains.remove(nameOfTrain);
     }
 
-    public void addStation(String nameOfTrain, String nameOfStation, String time) {
-        for (Train train : trains)
-            if (train.getName().equals(nameOfTrain))
-                train.getStations().put(nameOfStation, time);
+    public void addStation(String nameOfTrain, String nameOfStation, LocalTime time) {
+        trains.get(nameOfTrain).addStation(nameOfStation, time);
     }
 
     public void removeStation(String nameOfTrain, String nameOfStation) {
-        for (Train train : trains)
-            if (train.getName().equals(nameOfTrain))
-                train.getStations().remove(nameOfStation);
+        trains.get(nameOfTrain).removeStation(nameOfStation);
     }
 
-    private int timeStrToMinutes(String timeInString) {
-        String[] s = timeInString.split(":");
-        return Integer.parseInt(s[0]) * 60 + Integer.parseInt(s[1]);
-    }
-
-    public String nearestTrain(String nameOfStation, String timeInString) {
-        int time = timeStrToMinutes(timeInString);
-        int minTime = 1440;
+    public String nearestTrain(String nameOfStation, LocalTime currentTime) {
+        LocalTime minTime = LocalTime.MAX;
         String result = "";
-        for (Train train : trains) {
-            for (int j = 0; j < train.getStations().size(); j++) {
-                if (train.getStations().containsKey(nameOfStation) &&
-                        timeStrToMinutes(train.getDepartureTime()) >= time &&
-                        timeStrToMinutes(train.getStations().get(nameOfStation)) < minTime) {
-                    minTime = timeStrToMinutes(train.getStations().get(nameOfStation));
-                    result = train.getName();
-                }
+        for (Map.Entry<String, Train> entry : trains.entrySet()) {
+            Train train = entry.getValue();
+            if (train.isArriveAtTheStation(nameOfStation) &&
+                    train.getDepartureTime().isAfter(currentTime) &&
+                    train.arrivalTime(nameOfStation).isBefore(minTime)) {
+                minTime = train.arrivalTime(nameOfStation);
+                result = entry.getKey();
             }
         }
         return result;
@@ -68,6 +60,6 @@ public class TrainSchedule {
 
     @Override
     public String toString() {
-        return "TrainSchedule{" + trains + '}';
+        return "TrainSchedule{" + trains.values() + '}';
     }
 }

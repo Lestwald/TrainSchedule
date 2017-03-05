@@ -1,28 +1,44 @@
 package trainschedule;
 
+import java.time.LocalTime;
 import java.util.Map;
+import java.util.HashMap;
 
 public class Train {
     private final String name;
-    private final String departureTime;
-    private final Map<String, String> stations;
+    private final LocalTime departureTime;
+    private final Map<String, LocalTime> stations;
 
-    public Train(String name, String departureTime, Map<String, String> stations) {
+    Train(String name, LocalTime departureTime, Map<String, LocalTime> stations) {
         this.name = name;
         this.departureTime = departureTime;
         this.stations = stations;
     }
 
-    public String getName() {
-        return name;
+    LocalTime getDepartureTime() {
+        return this.departureTime;
     }
 
-    public String getDepartureTime() {
-        return departureTime;
+    boolean isArriveAtTheStation(String nameOfStation) {
+        return this.stations.containsKey(nameOfStation);
     }
 
-    public Map<String, String> getStations() {
-        return stations;
+    LocalTime arrivalTime(String nameOfStation) {
+        return this.stations.get(nameOfStation);
+    }
+
+    void addStation(String nameOfStation, LocalTime time) {
+        stations.put(nameOfStation, time);
+    }
+
+    void removeStation(String nameOfStation) {
+        stations.remove(nameOfStation);
+    }
+
+    Map<String, Train> mapOfTrain() {
+        Map<String, Train> mapOfTrain = new HashMap<>();
+        mapOfTrain.put(this.name, this);
+        return mapOfTrain;
     }
 
     @Override
