@@ -6,34 +6,34 @@ import java.util.*;
 public class TrainSchedule {
     final Map<String, Train> trains = new HashMap<>();
 
-    public TrainSchedule(Set<Train> trains) {
+    public TrainSchedule(final Set<Train> trains) {
         for (Train train : trains) {
-            this.trains.putAll(train.mapOfTrain());
+            this.trains.put(train.name, train);
         }
     }
 
-    public void addTrain(Train train) {
-        trains.putAll(train.mapOfTrain());
+    public void addTrain(final Train train) {
+        trains.put(train.name, train);
     }
 
-    public void removeTrain(String nameOfTrain) {
+    public void removeTrain(final String nameOfTrain) {
         trains.remove(nameOfTrain);
     }
 
-    public void addStation(String nameOfTrain, String nameOfStation, LocalTime time) {
+    public void addStation(final String nameOfTrain, final String nameOfStation, final LocalTime time) {
         trains.get(nameOfTrain).addStation(nameOfStation, time);
     }
 
-    public void removeStation(String nameOfTrain, String nameOfStation) {
+    public void removeStation(final String nameOfTrain, final String nameOfStation) {
         trains.get(nameOfTrain).removeStation(nameOfStation);
     }
 
-    public String nearestTrain(String nameOfStation, LocalTime currentTime) {
+    public String nearestTrain(final String nameOfStation, final LocalTime currentTime) {
         LocalTime minTime = LocalTime.MAX;
         String result = "";
-        for (Map.Entry<String, Train> entry : trains.entrySet()) {
+        for (final Map.Entry<String, Train> entry : trains.entrySet()) {
             Train train = entry.getValue();
-            if (train.isArriveAtTheStation(nameOfStation) &&
+            if (train.doesArriveAtTheStation(nameOfStation) &&
                     train.getDepartureTime().isAfter(currentTime) &&
                     train.arrivalTime(nameOfStation).isBefore(minTime)) {
                 minTime = train.arrivalTime(nameOfStation);

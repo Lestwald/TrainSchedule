@@ -4,25 +4,29 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalTime;
+import java.util.Map;
+import java.util.Set;
 import java.util.HashMap;
 import java.util.HashSet;
 
 import static org.junit.Assert.*;
 
 public class TrainScheduleTest {
-    private HashSet<Train> trains = new HashSet<>();
-    private HashMap<String, LocalTime> stations1 = new HashMap<>();
-    private HashMap<String, LocalTime> stations2 = new HashMap<>();
-    private HashMap<String, LocalTime> stations3 = new HashMap<>();
+    private Set<Train> trains = new HashSet<>();
+    private Map<String, LocalTime> stations1 = new HashMap<>();
+    private Map<String, LocalTime> stations2 = new HashMap<>();
+    private Map<String, LocalTime> stations3 = new HashMap<>();
 
     @Before
     public void setUpTrains() {
+        stations1.clear();
         stations1.put("st01", LocalTime.of(11, 27));
         stations1.put("st03", LocalTime.of(12, 48));
         stations1.put("st04", LocalTime.of(14, 40));
         stations1.put("st07", LocalTime.of(17, 15));
         stations1.put("st09", LocalTime.of(20, 32));
 
+        stations2.clear();
         stations2.put("st01", LocalTime.of(13, 20));
         stations2.put("st02", LocalTime.of(15, 19));
         stations2.put("st04", LocalTime.of(16, 36));
@@ -31,6 +35,7 @@ public class TrainScheduleTest {
         stations2.put("st08", LocalTime.of(21, 18));
         stations2.put("st10", LocalTime.of(22, 50));
 
+        stations3.clear();
         stations3.put("st02", LocalTime.of(15, 37));
         stations3.put("st03", LocalTime.of(16, 10));
         stations3.put("st05", LocalTime.of(18, 23));
@@ -38,6 +43,7 @@ public class TrainScheduleTest {
         stations3.put("st09", LocalTime.of(21, 18));
         stations3.put("st10", LocalTime.of(23, 40));
 
+        trains.clear();
         trains.add(new Train("train1", LocalTime.of(9, 54), stations1));
         trains.add(new Train("train2", LocalTime.of(12, 36), stations2));
         trains.add(new Train("train3", LocalTime.of(14, 20), stations3));
@@ -94,13 +100,13 @@ public class TrainScheduleTest {
         TrainSchedule schedule = new TrainSchedule(trains);
 
         schedule.removeStation("train1", "st07");
-        assertFalse(schedule.trains.get("train1").isArriveAtTheStation("st07"));
+        assertFalse(schedule.trains.get("train1").doesArriveAtTheStation("st07"));
 
         schedule.removeStation("train2", "st01");
-        assertFalse(schedule.trains.get("train2").isArriveAtTheStation("st01"));
+        assertFalse(schedule.trains.get("train2").doesArriveAtTheStation("st01"));
 
         schedule.removeStation("train3", "st03");
-        assertFalse(schedule.trains.get("train3").isArriveAtTheStation("st03"));
+        assertFalse(schedule.trains.get("train3").doesArriveAtTheStation("st03"));
     }
 
     @Test
